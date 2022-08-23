@@ -9,6 +9,7 @@ $app->post('/api/v1/submit', function (Request $request, Response $response, arr
   $code = $params['code'];
   $language = $params['language'];
   $stdin = $params['stdin'];
+  
   try{
     $languageObj=null;
     if($language == 'cpp'){
@@ -45,8 +46,9 @@ $app->post('/api/v1/submit', function (Request $request, Response $response, arr
       $response->getBody()->write($payload);
 	
       //after all the work delete the folder
-      $deleteFolder = 'rm -r '. PARENT_FOLDER_PATH.'/tmp/'.$DockerContainer->getFolderName();
-      exec($deleteFolder);
+      /**TODO Uncomment below two lines */
+      // $deleteFolder = 'rm -r '. PARENT_FOLDER_PATH.'/tmp/'.$DockerContainer->getFolderName();
+      // exec($deleteFolder);
 
       //return the response
       return $response
