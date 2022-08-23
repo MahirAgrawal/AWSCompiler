@@ -27,13 +27,24 @@ class DockerContainer{
         throw new \Exception('Internal Server Error');
       }
 
-      //opening file in folder
+      //opening file in folder to write code
       if(!($file = fopen(PARENT_FOLDER_PATH."/tmp/$this->folderName/tmp/$this->fileName.$this->languageExtension",'w'))){ 
-	throw new \Exception('Internal Server Error');
+	      throw new \Exception('Internal Server Error');
       }
 
-      //saving code in file
+      //writing code in file
       if(!fwrite($file,$this->code)){
+        throw new \Exception('Internal Server Error');
+      }
+      fclose($file);
+      $file=null;
+
+      //opening file in folder to save input
+      if(!($file = fopen(PARENT_FOLDER_PATH."/tmp/$this->folderName/tmp/$this->fileName.txt",'w'))){ 
+        throw new \Exception('Internal Server Error');
+      }
+      //writing input in file
+      if(!fwrite($file,$this->stdin)){
         throw new \Exception('Internal Server Error');
       }
       fclose($file);
@@ -44,7 +55,10 @@ class DockerContainer{
     }
 
     private function prepareContainer() : string{
-      $bashstmt = 'timeout -s SIGKILL 3 docker run --rm -d -it -v '.VOLUME_PATH.'/'.$this->folderName.':/'.$this->folderName.' '.
+      /** TODO - prepend the command timeout in below bashstmt
+       * timeout -s SIGKILL 3 
+       */
+      $bashstmt = 'docker run --rm -d -it -v '."\"".VOLUME_PATH.'/'.$this->folderName.':/'.$this->folderName."\"".' '.
       DOCKER_IMAGE. ' bash '. $this->folderName . '/runner.sh ' . 
       " $this->timeout $this->folderName $this->compilerName $this->fileName.$this->languageExtension";
       if(!is_null($this->outputCommand)){
@@ -59,10 +73,10 @@ class DockerContainer{
 
       //error if occurs then should be redirect to log file in src/Container/errorlogs.txt
       $bashstmt = $this->prepareContainer() .' 2>>'. PARENT_FOLDER_PATH . '/src/Container/errorlogs.txt';
-      
+      echo $bashstmt;
       //get output container id to variable(in case of successful docker container running)
       $containerId = exec($bashstmt);
-      
+
       //if container was obtained, we should store it's id in txt file in src/Container/dockerContainer.txt
       if(!empty($containerId)){
         //IMPORTANT LINE WHICH SAVED ME
