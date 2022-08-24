@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # takes input arguments:  userFolder compilerName fileName outputCommand
 # timeoutSec - for specifying the timeout seconds for program to execute
 # userFolder - userFolder for mounting the files
@@ -32,14 +31,11 @@ if [[ ! -z "$outputCommand" ]]; then
         # starts the clock to calculate time
         START=`date +%s.%N`
 
-        # if timeout then $code will be empty as output will be empty or else the desired output will be stored in codeOutput variable
-        timeout -s SIGKILL $timeoutSec $outputCommand
-        # -z checks if the variable codeOutput is empty(in case of timeout)
+        # if timeout then last return signal i.e. $? will be 137
+        timeout -s SIGKILL $timeoutSec $outputCommand <$userFolder/tmp/input.txt
         if [ $? -eq 137 ]; then
             # give timeout error in error.txt
-            echo Time Limit Exceeded >&2
-        else
-            echo $codeOutput
+            echo Time Limit Exceeded >$userFolder/error.txt
         fi
 
     fi
@@ -48,12 +44,9 @@ else
     START=`date +%s.%N`
 
     # interpretes the file with the interpreter
-    timeout -s SIGKILL $timeoutSec $compiler /$userFolder/tmp/$file
-    
-    # !-z checks if the variable codeOutput is not empty(in case of some STDOUT stream)
-    # codeOutput will be empty in case php interpreter gives STDERR stream which goes into error.txt
+    timeout -s SIGKILL $timeoutSec $compiler /$userFolder/tmp/$file <$userFolder/tmp/input.txt
     if [[ $? -eq 137 ]]; then
-        echo Time Limit Exceeded >&2
+        echo Time Limit Exceeded >$userFolder/error.txt
     fi
 fi
 

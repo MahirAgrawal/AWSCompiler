@@ -6,10 +6,21 @@ use MyApp\Container\DockerContainer as DockerContainer;
 
 $app->post('/api/v1/submit', function (Request $request, Response $response, array $args) {
   $params = (array)$request->getParsedBody();
-  $code = $params['code'];
-  $language = $params['language'];
-  $stdin = $params['stdin'];
   try{
+    if(!(isset($params['code']))){
+      throw new \Exception('PARAMETER MISSING: code');
+    }
+    if(!(isset($params['language']))){
+      throw new \Exception('PARAMETER MISSING: language');
+    }
+    if(!isset($params['stdin'])){
+      $params['stdin'] = " ";
+    }
+    
+    $code = $params['code'];
+    $language = $params['language'];
+    $stdin = $params['stdin'];
+
     $languageObj=null;
     if($language == 'cpp'){
       $languageObj = new \MyApp\Languages\LanguageObj($code,'g++','cpp','./a.out',CPP_TIMEOUT,$stdin);
@@ -37,9 +48,9 @@ $app->post('/api/v1/submit', function (Request $request, Response $response, arr
                   array(
                       'api_status_code'=>'200',
                       'api_message'=>'Success',
-                      'stderr'=>array_filter(explode("\n",$errorStr)),
-                      'stdout'=>array_filter(explode("\n",$outputStr)),
-                      'runtime'=>array_filter(explode("\n",$runtimeSec),'strlen')
+                      'stderr'=>$errorStr,
+                      'stdout'=>$outputStr,
+                      'runtime'=>$runtimeSec
                       )
                   );
       $response->getBody()->write($payload);
@@ -57,7 +68,11 @@ $app->post('/api/v1/submit', function (Request $request, Response $response, arr
       throw new Exception('Internal Server Error');
     }
   }catch(\Exception $e){
-    $payload = json_encode(array('api_status_code'=>'500','api_message'=>$e->getMessage(),'stderr'=>'','stdout'=>'','runtime'=>''));
+    $api_status_code = 200;
+    if($e->getMessage() === 'Internal Server Error'){
+      $api_status_code = 500;
+    }
+    $payload = json_encode(array('api_status_code'=>$api_status_code,'api_message'=>$e->getMessage(),'stderr'=>'','stdout'=>'','runtime'=>''));
     $response->getBody()->write($payload);
     return $response
     ->withHeader('Content-Type', 'application/json')

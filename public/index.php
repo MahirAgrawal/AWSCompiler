@@ -10,6 +10,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory; 
 
 $app = AppFactory::create();
+$app->addBodyParsingMiddleware();
 
 $app->get('/', function (Request $request, Response $response, array $args) {
   $response->getBody()->write("200");
