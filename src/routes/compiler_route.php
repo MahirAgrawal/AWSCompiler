@@ -72,6 +72,7 @@ $app->post('/api/v1/submit', function (Request $request, Response $response, arr
     if($e->getMessage() === 'Internal Server Error'){
       $api_status_code = 500;
     }
+ 
     $payload = json_encode(array('api_status_code'=>$api_status_code,'api_message'=>$e->getMessage(),'stderr'=>'','stdout'=>'','runtime'=>''));
     $response->getBody()->write($payload);
     return $response

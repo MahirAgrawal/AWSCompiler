@@ -10,7 +10,6 @@ userFolder=$2
 compiler=$3
 file=$4
 outputCommand=$5
-
 # STDERR redirects to (during compilation) error.txt and STDOUT(after successful compilation and running) in output.txt
 exec 1>/$userFolder/output.txt 
 exec 2>/$userFolder/error.txt
