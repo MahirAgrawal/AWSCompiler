@@ -73,7 +73,6 @@ class DockerContainer{
 
       //error if occurs then should be redirect to log file in src/Container/errorlogs.txt
       $bashstmt = $this->prepareContainer() .' 2>>'. PARENT_FOLDER_PATH . '/src/Container/errorlogs.txt';
-      echo $bashstmt;
       //get output container id to variable(in case of successful docker container running)
       $containerId = exec($bashstmt);
 
