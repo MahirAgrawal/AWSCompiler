@@ -7,7 +7,7 @@ require_once($_SERVER['DOCUMENT_ROOT'].'/../src/config/config.php');
 require_once($_SERVER['DOCUMENT_ROOT'].'/../src/config/default_timeout.php');
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Factory\AppFactory; 
+use Slim\Factory\AppFactory;
 
 $app = AppFactory::create();
 $app->addBodyParsingMiddleware();
