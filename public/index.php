@@ -1,7 +1,7 @@
 <?php
-//ini_set('display_errors',1);
-//ini_set('display_startup_errors',1);
-//error_reporting(E_ALL);
+ini_set('display_errors',0);
+ini_set('display_startup_errors',0);
+error_reporting(0);
 require_once '../vendor/autoload.php';
 require_once($_SERVER['DOCUMENT_ROOT'].'/../src/config/config.php');
 require_once($_SERVER['DOCUMENT_ROOT'].'/../src/config/default_timeout.php');
