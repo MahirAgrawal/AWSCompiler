@@ -11,10 +11,10 @@ compiler=$3
 file=$4
 outputCommand=$5
 
-echo $timeoutSec $userFolder $compiler $file $outputCommand
 # STDERR redirects to (during compilation) error.txt and STDOUT(after successful compilation and running) in output.txt
 exec 1>/$userFolder/output.txt 
 exec 2>/$userFolder/error.txt
+
 
 if [[ ! -z "$outputCommand" ]]; then
     # compiles the file with the compiler
@@ -32,7 +32,7 @@ if [[ ! -z "$outputCommand" ]]; then
         START=`date +%s.%N`
 
         # if timeout then last return signal i.e. $? will be 137
-        timeout -s SIGKILL $timeoutSec $outputCommand
+        timeout -s SIGKILL $timeoutSec $outputCommand <$userFolder/tmp/input.txt
         if [ $? -eq 137 ]; then
             # give timeout error in error.txt
             echo Time Limit Exceeded >$userFolder/error.txt
@@ -44,7 +44,7 @@ else
     START=`date +%s.%N`
 
     # interpretes the file with the interpreter
-    timeout -s SIGKILL $timeoutSec $compiler /$userFolder/tmp/$file
+    timeout -s SIGKILL $timeoutSec $compiler /$userFolder/tmp/$file <$userFolder/tmp/input.txt
     if [[ $? -eq 137 ]]; then
         echo Time Limit Exceeded >$userFolder/error.txt
     fi

@@ -40,7 +40,7 @@ class DockerContainer{
       $file=null;
 
       //opening file in folder to save input
-      if(!($file = fopen(PARENT_FOLDER_PATH."/tmp/$this->folderName/tmp/$this->fileName.txt",'w'))){ 
+      if(!($file = fopen(PARENT_FOLDER_PATH."/tmp/$this->folderName/tmp/input.txt",'w'))){ 
         throw new \Exception('Internal Server Error');
       }
       //writing input in file
