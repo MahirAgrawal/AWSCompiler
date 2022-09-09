@@ -36,7 +36,7 @@ $app->post('/api/v1/submit', function (Request $request, Response $response, arr
       $languageObj = new \MyApp\Languages\LanguageObj($code,'javac','java','java',JAVA_TIMEOUT,$stdin);
     }
     else{
-      throw new Exception($language . 'NOT FOUND');
+      throw new Exception($language . ' NOT FOUND');
     }
 
     $DockerContainer = new DockerContainer($languageObj->code,$languageObj->languageExtension,$languageObj->compilerName,$languageObj->outputCommand,$languageObj->stdin,$languageObj->timeout);
